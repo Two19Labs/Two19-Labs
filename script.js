@@ -1,4 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Scroll to section based on URL path (e.g. /services → #services)
+    const pathSection = window.location.pathname.replace(/^\//, '');
+    if (pathSection) {
+      const target = document.getElementById(pathSection);
+      if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 50);
+    }
+
+    // Intercept internal section links to use pushState instead of hash
+    document.querySelectorAll('a[href^="/"]').forEach(link => {
+      const href = link.getAttribute('href');
+      link.addEventListener('click', (e) => {
+        const sectionId = href === '/' ? 'home' : href.replace(/^\//, '');
+        const target = document.getElementById(sectionId);
+        if (target) {
+          e.preventDefault();
+          history.pushState(null, '', href);
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
     // Intersection Observer for fade-in animations
     const observerOptions = {
       root: null,
